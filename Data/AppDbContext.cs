@@ -1,11 +1,11 @@
 using Microsoft.EntityFrameworkCore;
 using TaftaCRM.Models.Internal.System;
 
-namespace TaftaCRM.Models;
+namespace TaftaCRM.Data;
 
-public class ServerDbContext : DbContext
+public class AppDbContext : DbContext
 {
-    public ServerDbContext(DbContextOptions<ServerDbContext> Options)
+    public AppDbContext(DbContextOptions<AppDbContext> Options)
         : base(Options)
     {
     }
