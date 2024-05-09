@@ -3,9 +3,9 @@ using TaftaCRM.Models.Internal.System;
 
 namespace TaftaCRM.Data;
 
-public class AppDbContext : DbContext
+public class TaftaDbContext : DbContext
 {
-    public AppDbContext(DbContextOptions<AppDbContext> Options)
+    public TaftaDbContext(DbContextOptions<TaftaDbContext> Options)
         : base(Options)
     {
     }
