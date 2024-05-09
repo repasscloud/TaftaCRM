@@ -14,12 +14,13 @@ public class Program
         builder.Services.AddRazorComponents()
             .AddInteractiveServerComponents();
 
-        // pgsql
-        builder.Services.AddDbContext<AppDbContext>(options =>
+        // PostgreSQL
+        builder.Services.AddDbContext<TaftaDbContext>(options =>
             options.UseNpgsql(builder.Configuration.GetConnectionString("PgsqlConnection")));
         
-        // swagger
+        // Add Controllers for API support
         builder.Services.AddControllers();
+        // Swagger configuration
         builder.Services.AddSwaggerGen();
 
         // Initialize PasswordHasher with configuration settings
@@ -42,11 +43,21 @@ public class Program
         }
 
         app.UseStaticFiles();
+        app.UseRouting(); // This adds route matching to the middleware pipeline
+        app.UseAuthorization(); // This adds authorization capability
+
+        app.UseEndpoints(endpoints =>
+        {
+            endpoints.MapControllers();  // Maps attributes routes for controllers.
+        });
+
         app.UseAntiforgery();
 
+        // Map Blazor hub
         app.MapRazorComponents<App>()
             .AddInteractiveServerRenderMode();
 
+        // Run the application
         app.Run();
     }
 }
