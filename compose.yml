@@ -2,7 +2,7 @@ services:
   server:
     build:
       context: .
-      dockerfile: Dockerfile.app
+      dockerfile: Dockerfile.server
       target: final
     container_name: taftacrm
     ports:
