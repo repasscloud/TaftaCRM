@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.EntityFrameworkCore;
 using TaftaCRM.Components;
 using TaftaCRM.Data;
@@ -11,8 +12,21 @@ public class Program
         var builder = WebApplication.CreateBuilder(args);
 
         // Add services to the container.
+        builder.Services.AddBlazorBootstrap();
         builder.Services.AddRazorComponents()
             .AddInteractiveServerComponents();
+
+        // authentication and authorization
+        builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+            .AddCookie(options =>
+            {
+                options.Cookie.Name = "taftacrm_auth_token";
+                options.LoginPath = "/login";
+                options.Cookie.MaxAge = TimeSpan.FromMinutes(30);
+                options.AccessDeniedPath = "/access-denied";
+            });
+        builder.Services.AddAuthorization();
+        builder.Services.AddCascadingAuthenticationState();
 
         // PostgreSQL
         builder.Services.AddDbContext<TaftaDbContext>(options =>
@@ -42,20 +56,29 @@ public class Program
             });
         }
 
-        app.UseStaticFiles();
+        /*
+         * moved down
+         */
+        // app.UseStaticFiles();
         app.UseRouting(); // This adds route matching to the middleware pipeline
         app.UseAuthorization(); // This adds authorization capability
 
-        app.UseEndpoints(endpoints =>
-        {
-            endpoints.MapControllers();  // Maps attributes routes for controllers.
-        });
+        /*
+         * moved down
+         */
+        // app.UseEndpoints(endpoints =>
+        // {
+        //     endpoints.MapControllers();  // Maps attributes routes for controllers.
+        // });
 
+        app.UseStaticFiles();
         app.UseAntiforgery();
 
         // Map Blazor hub
         app.MapRazorComponents<App>()
             .AddInteractiveServerRenderMode();
+
+        app.MapControllers();
 
         // Run the application
         app.Run();

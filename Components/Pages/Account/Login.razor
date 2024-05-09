@@ -1,0 +1,71 @@
+@page "/login"
+
+@using TaftaCRM.Models.ViewModels
+@inject TaftaDbContext _taftaDbContext
+@inject NavigationManager _navigationManager
+
+<div class="row">
+    <div class="col-lg-4 offset-lg-4 pt-4 pb-4 border">
+        <EditForm Model="@Model" OnValidSubmit="Authenticate" FormName="LoginForm">
+            <DataAnnotationsValidator />
+            <div class="mb-3 text-center flex-column">
+                <!-- <img src="/images/avatar.png" style="max-height;5rem;" /> -->
+                <h3>LOGIN</h3>
+            </div>
+
+            <div class="mb-3">
+                <label>Email Address</label>
+                <InputText @bind-Value="Model.UserName" class="form-control" placeholder="firstname.lastname@email.com" />
+                <ValidationMessage For="() => Model.UserName" />
+            </div>
+
+            <div class="mb-3">
+                <label>Password</label>
+                <InputText @bind-Value="Model.Password" class="form-control" placeholder="abcd1234" type="password" />
+                <ValidationMessage For="() => Model.Password" />
+            </div>
+
+            <div class="mb-3 text-center">
+                <span class="text-danger">@errorMessage</span>
+            </div>
+
+            <div class="mb-3 d-grid gap-2">
+                <button type="submit" class="btn btn-primary">Login</button>
+            </div>
+        </EditForm>
+    </div>
+</div>
+
+@code {
+    [CascadingParameter]
+    public HttpContext? HttpContext { get; set; }
+
+    [SupplyParameterFromForm]
+    public LoginViewModel Model { get; set; } = new();
+
+    private string? errorMessage;
+
+    private async Task Authenticate()
+    {
+        var userAccount = _taftaDbContext.UsersAccounts.Where(x => x.EmailAddress == Model.UserName).FirstOrDefault();
+        var hashedPassword = Helpers.PasswordHasher.HashPassword(Model.Password!);
+
+        if (userAccount is null || userAccount.Password != hashedPassword)
+        {
+            errorMessage = "Invalid Email address or Password";
+            return;
+        }
+
+        var claims = new List<Claim>
+        {
+            new Claim(ClaimTypes.Name, userAccount.EmailAddress),
+            new Claim(ClaimTypes.Role, userAccount.userAccountRole.GetStringvalue()!),
+        };
+
+        var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+        var principal = new ClaimsPrincipal(identity);
+        await HttpContext!.SignInAsync(principal);
+
+        _navigationManager.NavigateTo("/");
+    }
+}

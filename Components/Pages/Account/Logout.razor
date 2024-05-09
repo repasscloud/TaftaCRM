@@ -1,0 +1,44 @@
+@page "/logout"
+@inject NavigationManager _navigationManager 
+
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-body flex-column">
+                <div class="text-center">
+                    <img src="/images/8lw46i.jpg" style="max-height:20rem" />
+                </div>
+                <div class="text-center mt-2">
+                    <span class="text-danger fw-bolder">You've successfully logged out</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@code {
+    [CascadingParameter]
+    public HttpContext? HttpContext { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+        // Assume the user is authenticated and the sign-out process should occur
+        if (HttpContext?.User?.Identity?.IsAuthenticated == true)
+        {
+            // Perform sign out
+            await HttpContext.SignOutAsync();
+
+            // Wait for 5 seconds
+            await Task.Delay(5000);
+
+            // Redirect to the login page or home page after logout
+            _navigationManager.NavigateTo("/login", true);  // Use 'true' to force load the page from the server
+        }
+        else
+        {
+            // Immediately redirect if not authenticated or if already logged out
+            _navigationManager.NavigateTo("/login", true);
+        }
+    }
+}
