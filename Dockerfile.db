@@ -1,6 +1,6 @@
 FROM postgres:16.2-alpine3.19
 
-ENV POSTGRES_DB=taftadb_dev
+ENV POSTGRES_DB=tafta_dev
 ENV POSTGRES_USER=tafta_dev
 ENV POSTGRES_PASSWORD=tafta_dev123
 
