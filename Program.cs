@@ -22,6 +22,8 @@ public class Program
         builder.Services.AddControllers();
         builder.Services.AddSwaggerGen();
 
+        // Initialize PasswordHasher with configuration settings
+        Helpers.PasswordHasher.Initialize(builder.Configuration);
 
         var app = builder.Build();
 
