@@ -14,9 +14,9 @@ namespace TaftaCRM.Controllers
     [ApiController]
     public class UserAccountController : ControllerBase
     {
-        private readonly AppDbContext _context;
+        private readonly TaftaDbContext _context;
 
-        public UserAccountController(AppDbContext context)
+        public UserAccountController(TaftaDbContext context)
         {
             _context = context;
         }
