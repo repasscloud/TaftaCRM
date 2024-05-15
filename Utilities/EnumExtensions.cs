@@ -1,4 +1,4 @@
-using TaftaCRM.Models.Internal.System.Static;
+using TaftaCRM.Helpers;
 
 namespace TaftaCRM.Utilities;
 
