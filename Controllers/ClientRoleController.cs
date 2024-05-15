@@ -23,16 +23,16 @@ namespace TaftaCRM.Controllers
 
         // GET: api/ClientRole
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<ClientRole>>> GetClientRole()
+        public async Task<ActionResult<IEnumerable<ClientRole>>> GetRoles()
         {
-            return await _context.Roles.ToListAsync();
+            return await _context.ClientRoles.Include(cr => cr.UserAccounts).ToListAsync();
         }
 
         // GET: api/ClientRole/5
         [HttpGet("{id}")]
         public async Task<ActionResult<ClientRole>> GetClientRole(int id)
         {
-            var clientRole = await _context.Roles.FindAsync(id);
+            var clientRole = await _context.ClientRoles.FindAsync(id);
 
             if (clientRole == null)
             {
@@ -47,7 +47,7 @@ namespace TaftaCRM.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> PutClientRole(int id, ClientRole clientRole)
         {
-            if (id != clientRole.RoleId)
+            if (id != clientRole.Id)
             {
                 return BadRequest();
             }
@@ -78,23 +78,23 @@ namespace TaftaCRM.Controllers
         [HttpPost]
         public async Task<ActionResult<ClientRole>> PostClientRole(ClientRole clientRole)
         {
-            _context.Roles.Add(clientRole);
+            _context.ClientRoles.Add(clientRole);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetClientRole", new { id = clientRole.RoleId }, clientRole);
+            return CreatedAtAction("GetClientRole", new { id = clientRole.Id }, clientRole);
         }
 
         // DELETE: api/ClientRole/5
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteClientRole(int id)
         {
-            var clientRole = await _context.Roles.FindAsync(id);
+            var clientRole = await _context.ClientRoles.FindAsync(id);
             if (clientRole == null)
             {
                 return NotFound();
             }
 
-            _context.Roles.Remove(clientRole);
+            _context.ClientRoles.Remove(clientRole);
             await _context.SaveChangesAsync();
 
             return NoContent();
@@ -102,7 +102,7 @@ namespace TaftaCRM.Controllers
 
         private bool ClientRoleExists(int id)
         {
-            return _context.Roles.Any(e => e.RoleId == id);
+            return _context.ClientRoles.Any(e => e.Id == id);
         }
     }
 }
