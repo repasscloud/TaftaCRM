@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.EntityFrameworkCore;
 using TaftaCRM.Components;
 using TaftaCRM.Data;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace TaftaCRM;
 
@@ -10,6 +11,10 @@ public class Program
     public static void Main(string[] args)
     {
         var builder = WebApplication.CreateBuilder(args);
+
+        // PostgreSQL
+        builder.Services.AddDbContext<TaftaDbContext>(options =>
+            options.UseNpgsql(builder.Configuration.GetConnectionString("PgsqlConnection") ?? throw new InvalidOperationException("Connection string 'TaftaDbConttext' not found.")));
 
         // Add services to the container.
         builder.Services.AddBlazorBootstrap();
@@ -28,10 +33,6 @@ public class Program
         builder.Services.AddAuthorization();
         builder.Services.AddCascadingAuthenticationState();
 
-        // PostgreSQL
-        builder.Services.AddDbContext<TaftaDbContext>(options =>
-            options.UseNpgsql(builder.Configuration.GetConnectionString("PgsqlConnection")));
-        
         // Add Controllers for API support
         builder.Services.AddControllers();
         // Swagger configuration
