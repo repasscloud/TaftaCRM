@@ -12,8 +12,8 @@ using TaftaCRM.Data;
 namespace TaftaCRM.Migrations
 {
     [DbContext(typeof(TaftaDbContext))]
-    [Migration("20240510133846_initWithSeed")]
-    partial class initWithSeed
+    [Migration("20240515103238_initDb")]
+    partial class initDb
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
