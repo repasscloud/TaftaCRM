@@ -54,7 +54,10 @@
     private async Task RegisterUser()
     {
         // check if there any users in the DB first
-        if (!_taftaDbContext.UsersAccounts.Any())
+        var existingAdminUser = _taftaDbContext.UsersAccounts
+            .FirstOrDefault(x => x.userAccountRole == Models.Internal.System.Static.UserAccountRole.Administrator);
+        
+        if (existingAdminUser is null)
         {
             // hash the password
             var hashedPassword = Helpers.PasswordHasher.HashPassword(Model.Password!);
@@ -82,7 +85,7 @@
         var existingUser = _taftaDbContext.UsersAccounts
             .FirstOrDefault(x => x.EmailAddress == Model.UserName!.ToLowerInvariant());
 
-        if (existingUser == null)
+        if (existingUser is null)
         {
             // user does not exist, safe to proceed with creation
 
@@ -95,7 +98,7 @@
                 Id = 0,
                 EmailAddress = Model.UserName!,
                 Password = hashedPassword,
-                userAccountRole = Models.Internal.System.Static.UserAccountRole.Pleb,
+                userAccountRole = Models.Internal.System.Static.UserAccountRole.Guest,
                 userAccountStatus = Models.Internal.System.Static.UserAccountStatus.Enabled,
             };
 
@@ -105,7 +108,7 @@
             // save changes to the db
             await _taftaDbContext.SaveChangesAsync();
 
-            _navigationManager.NavigateTo("user-created/pleb");
+            _navigationManager.NavigateTo("user-created/guest");
         }
         else
         {
