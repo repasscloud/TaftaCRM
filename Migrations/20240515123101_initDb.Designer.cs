@@ -12,7 +12,7 @@ using TaftaCRM.Data;
 namespace TaftaCRM.Migrations
 {
     [DbContext(typeof(TaftaDbContext))]
-    [Migration("20240515103238_initDb")]
+    [Migration("20240515123101_initDb")]
     partial class initDb
     {
         /// <inheritdoc />
@@ -27,103 +27,32 @@ namespace TaftaCRM.Migrations
 
             modelBuilder.Entity("TaftaCRM.Models.Client.Permissions.ClientRole", b =>
                 {
-                    b.Property<int>("RoleId")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("integer");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("RoleId"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("Name")
+                    b.Property<int>("Permissions")
+                        .HasColumnType("integer")
+                        .HasColumnName("permissions");
+
+                    b.Property<string>("RoleName")
                         .IsRequired()
                         .HasMaxLength(100)
-                        .HasColumnType("character varying(100)");
+                        .HasColumnType("character varying(100)")
+                        .HasColumnName("role_name");
 
-                    b.HasKey("RoleId");
+                    b.HasKey("Id");
 
-                    b.ToTable("ClientRoles");
-
-                    b.HasData(
-                        new
-                        {
-                            RoleId = 1,
-                            Name = "Administrator"
-                        });
-                });
-
-            modelBuilder.Entity("TaftaCRM.Models.Client.Permissions.Permission", b =>
-                {
-                    b.Property<int>("PermissionId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("PermissionId"));
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("character varying(100)");
-
-                    b.HasKey("PermissionId");
-
-                    b.ToTable("Permissions");
+                    b.ToTable("client_roles");
 
                     b.HasData(
                         new
                         {
-                            PermissionId = 1,
-                            Name = "Create"
-                        },
-                        new
-                        {
-                            PermissionId = 2,
-                            Name = "Read"
-                        },
-                        new
-                        {
-                            PermissionId = 3,
-                            Name = "Update"
-                        },
-                        new
-                        {
-                            PermissionId = 4,
-                            Name = "Delete"
-                        });
-                });
-
-            modelBuilder.Entity("TaftaCRM.Models.Client.Permissions.RolePermission", b =>
-                {
-                    b.Property<int>("RoleId")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("PermissionId")
-                        .HasColumnType("integer");
-
-                    b.HasKey("RoleId", "PermissionId");
-
-                    b.HasIndex("PermissionId");
-
-                    b.ToTable("RolePermissions");
-
-                    b.HasData(
-                        new
-                        {
-                            RoleId = 1,
-                            PermissionId = 1
-                        },
-                        new
-                        {
-                            RoleId = 1,
-                            PermissionId = 2
-                        },
-                        new
-                        {
-                            RoleId = 1,
-                            PermissionId = 3
-                        },
-                        new
-                        {
-                            RoleId = 1,
-                            PermissionId = 4
+                            Id = 1,
+                            Permissions = 15,
+                            RoleName = "Admin"
                         });
                 });
 
@@ -134,6 +63,9 @@ namespace TaftaCRM.Migrations
                         .HasColumnType("integer");
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<int?>("ClientRoleId")
+                        .HasColumnType("integer");
 
                     b.Property<string>("EmailAddress")
                         .IsRequired()
@@ -195,36 +127,40 @@ namespace TaftaCRM.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("ClientRoleId");
+
                     b.ToTable("user_accounts");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            ClientRoleId = 1,
+                            EmailAddress = "admin@taftacrm.com",
+                            EmailVerified = true,
+                            FailedLoginAttempts = 0,
+                            Password = "9mssKi>£4zpx?TY]@_i1.Wf8lFA9;",
+                            PhoneNumberVerified = false,
+                            SecurityStamp = "fc0c7d56-a791-4cba-bc13-9b5782bd6d36",
+                            TwoFactorEnabled = false,
+                            userAccountCreated = new DateTime(2024, 5, 15, 12, 31, 1, 249, DateTimeKind.Utc).AddTicks(6030),
+                            userAccountRole = 1,
+                            userAccountStatus = 0
+                        });
                 });
 
-            modelBuilder.Entity("TaftaCRM.Models.Client.Permissions.RolePermission", b =>
+            modelBuilder.Entity("TaftaCRM.Models.Internal.System.UserAccount", b =>
                 {
-                    b.HasOne("TaftaCRM.Models.Client.Permissions.Permission", "Permission")
-                        .WithMany("RolePermissions")
-                        .HasForeignKey("PermissionId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                    b.HasOne("TaftaCRM.Models.Client.Permissions.ClientRole", "ClientRole")
+                        .WithMany("UserAccounts")
+                        .HasForeignKey("ClientRoleId");
 
-                    b.HasOne("TaftaCRM.Models.Client.Permissions.ClientRole", "Role")
-                        .WithMany("RolePermissions")
-                        .HasForeignKey("RoleId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Permission");
-
-                    b.Navigation("Role");
+                    b.Navigation("ClientRole");
                 });
 
             modelBuilder.Entity("TaftaCRM.Models.Client.Permissions.ClientRole", b =>
                 {
-                    b.Navigation("RolePermissions");
-                });
-
-            modelBuilder.Entity("TaftaCRM.Models.Client.Permissions.Permission", b =>
-                {
-                    b.Navigation("RolePermissions");
+                    b.Navigation("UserAccounts");
                 });
 #pragma warning restore 612, 618
         }

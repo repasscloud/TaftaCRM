@@ -25,7 +25,7 @@ namespace TaftaCRM.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<UserAccount>>> GetUsersAccounts()
         {
-            return await _context.UsersAccounts.ToListAsync();
+            return await _context.UsersAccounts.Include(ua => ua.ClientRole).ToListAsync();
         }
 
         // GET: api/UserAccount/5

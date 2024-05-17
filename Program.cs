@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using TaftaCRM.Components;
 using TaftaCRM.Data;
 using Microsoft.Extensions.DependencyInjection;
+using System.Text.Json.Serialization;
 
 namespace TaftaCRM;
 
@@ -11,6 +12,14 @@ public class Program
     public static void Main(string[] args)
     {
         var builder = WebApplication.CreateBuilder(args);
+
+        // Add services to the container.
+        builder.Services.AddControllers()
+            .AddJsonOptions(options =>
+            {
+                options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.Preserve;
+                options.JsonSerializerOptions.WriteIndented = true;
+            });
 
         // PostgreSQL
         builder.Services.AddDbContext<TaftaDbContext>(options =>

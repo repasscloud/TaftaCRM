@@ -25,14 +25,18 @@ namespace TaftaCRM.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<ClientRole>>> GetRoles()
         {
-            return await _context.ClientRoles.Include(cr => cr.UserAccounts).ToListAsync();
+            return await _context.ClientRoles
+                                 .Include(cr => cr.UserAccounts)
+                                 .ToListAsync();
         }
 
         // GET: api/ClientRole/5
         [HttpGet("{id}")]
         public async Task<ActionResult<ClientRole>> GetClientRole(int id)
         {
-            var clientRole = await _context.ClientRoles.FindAsync(id);
+            var clientRole = await _context.ClientRoles
+                                           .Include(cr => cr.UserAccounts)
+                                           .FirstOrDefaultAsync(cr => cr.Id == id);
 
             if (clientRole == null)
             {

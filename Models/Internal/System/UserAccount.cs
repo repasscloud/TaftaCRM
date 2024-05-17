@@ -1,5 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using TaftaCRM.Models.Client.Permissions;
 using TaftaCRM.Models.Internal.System.Static;
 
 namespace TaftaCRM.Models.Internal.System;
@@ -52,4 +53,10 @@ public class UserAccount
 
     [Column("phone_number_verified")]
     public bool PhoneNumberVerified { get; set; } = false;
+
+    // Foreign key to ClientRole
+    [ForeignKey("ClientRoleId")]
+    public int? ClientRoleId { get; set; }
+
+    public virtual ClientRole? ClientRole { get; set; }
 }
