@@ -19,7 +19,7 @@ dotnet aspnet-codegenerator controller -name YourControllerName -m YourModel -dc
 
 4. Scaffold an API Controller
 ```sh
-dotnet aspnet-codegenerator controller --controllerName UserAccountController --model TaftaCRM.Models.Internal.System.UserAccount --dataContext TaftaCRM.Data.AppDbContext --relativeFolderPath Controllers --restWithNoViews --useAsyncActions
+dotnet aspnet-codegenerator controller --controllerName UserAccountController --model TaftaCRM.Models.Internal.System.UserAccount --dataContext TaftaCRM.Data.TaftaDbContext --relativeFolderPath Controllers --restWithNoViews --useAsyncActions
 ```
 
 5. Build and Run
@@ -33,5 +33,5 @@ dotnet run
 
 When creating using this tool, use the full namespace:
 ```sh
-dotnet aspnet-codegenerator controller -name UserAccountController -m TaftaCRM.Models.Internal.System.UserAccount -dc TaftaCRM.Data.AppDbContext --relativeFolderPath Controllers --useDefaultLayout --referenceScriptLibraries
+dotnet aspnet-codegenerator controller -name UserAccountController -m TaftaCRM.Models.Internal.System.UserAccount -dc TaftaCRM.Data.TaftaDbContext --relativeFolderPath Controllers --useDefaultLayout --referenceScriptLibraries
 ```
